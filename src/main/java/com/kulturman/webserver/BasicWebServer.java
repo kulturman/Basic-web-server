@@ -3,6 +3,7 @@ package com.kulturman.webserver;
 import lombok.AllArgsConstructor;
 
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -16,18 +17,28 @@ public class BasicWebServer {
         var request = requestParser.parse(httpRequest);
         var fullPath = getFullPath(request);
 
-        var fileContent = Files.readString(fullPath);
+        if (pathNotInRootDirectory(fullPath)) {
+            return "HTTP/1.1 403 Forbidden\r\n\r\n";
+        }
 
-        return "HTTP/1.1 200 OK\r\n\r\n" + fileContent;
+        if (!Files.exists(fullPath)) {
+            return "HTTP/1.1 404 Not Found\r\n\r\n";
+        }
+
+        return "HTTP/1.1 200 OK\r\n\r\n" + Files.readString(fullPath);
+    }
+
+    private boolean pathNotInRootDirectory(Path fullPath) {
+        return !fullPath.startsWith(FileSystems.getDefault().getPath(rootDirectory).normalize());
     }
 
     private Path getFullPath(Request request) {
-        var path = Path.of(rootDirectory + request.getPath());
+        var path = rootDirectory + request.getPath();
 
-        if (Files.isDirectory(path)) {
-            return Path.of(rootDirectory + request.getPath() + DEFAULT_PAGE);
+        if (Files.isDirectory(Path.of(path))) {
+            path += DEFAULT_PAGE;
         }
 
-        return Path.of(rootDirectory + request.getPath());
+        return FileSystems.getDefault().getPath(path).normalize();
     }
 }

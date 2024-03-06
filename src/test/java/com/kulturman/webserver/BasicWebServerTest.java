@@ -44,4 +44,16 @@ class BasicWebServerTest {
 
         assertEquals("HTTP/1.1 200 OK\r\n\r\n" + fileContent, response);
     }
+
+    @Test
+    void gets404IfFileNotFound() throws HttpRequestParserException, IOException {
+        var response = webServer.handleRequest("GET /non-existing-file HTTP/1.1");
+        assertEquals("HTTP/1.1 404 Not Found\r\n\r\n", response);
+    }
+
+    @Test
+    void gets403IfFileNotInRootDirectory() throws HttpRequestParserException, IOException {
+        var response = webServer.handleRequest("GET /../index.html HTTP/1.1");
+        assertEquals("HTTP/1.1 403 Forbidden\r\n\r\n", response);
+    }
 }
