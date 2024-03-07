@@ -18,14 +18,14 @@ public class BasicWebServer {
         var fullPath = getFullPath(request);
 
         if (pathNotInRootDirectory(fullPath)) {
-            return new Response("1.1", HttpStatus.FORBIDDEN);
+            return new Response(request.getHttpVersion(), HttpStatus.FORBIDDEN);
         }
 
         if (!Files.exists(fullPath)) {
-            return new Response("1.1", HttpStatus.NOT_FOUND);
+            return new Response(request.getHttpVersion(), HttpStatus.NOT_FOUND);
         }
 
-        return new Response("1.1", HttpStatus.OK, Files.readString(fullPath));
+        return new Response(request.getHttpVersion(), HttpStatus.OK, Files.readString(fullPath));
     }
 
     private boolean pathNotInRootDirectory(Path fullPath) {
