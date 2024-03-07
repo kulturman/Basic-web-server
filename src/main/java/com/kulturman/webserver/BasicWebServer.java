@@ -12,20 +12,20 @@ public class BasicWebServer {
     public static final String DEFAULT_PAGE = "/index.html";
     private final String rootDirectory;
 
-    public String handleRequest(String httpRequest) throws IOException, HttpRequestParserException {
+    public Response handleRequest(String httpRequest) throws IOException, HttpRequestParserException {
         var requestParser = new RequestParser();
         var request = requestParser.parse(httpRequest);
         var fullPath = getFullPath(request);
 
         if (pathNotInRootDirectory(fullPath)) {
-            return "HTTP/1.1 403 Forbidden\r\n\r\n";
+            return new Response("1.1", HttpStatus.FORBIDDEN);
         }
 
         if (!Files.exists(fullPath)) {
-            return "HTTP/1.1 404 Not Found\r\n\r\n";
+            return new Response("1.1", HttpStatus.NOT_FOUND);
         }
 
-        return "HTTP/1.1 200 OK\r\n\r\n" + Files.readString(fullPath);
+        return new Response("1.1", HttpStatus.OK, Files.readString(fullPath));
     }
 
     private boolean pathNotInRootDirectory(Path fullPath) {

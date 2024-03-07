@@ -24,7 +24,7 @@ class BasicWebServerTest {
 
         var response = webServer.handleRequest("GET / HTTP/1.1");
 
-        assertEquals("HTTP/1.1 200 OK\r\n\r\n" + fileContent, response);
+        assertEquals("HTTP/1.1 200 OK\r\n\r\n" + fileContent, response.toString());
     }
 
     @Test
@@ -33,7 +33,7 @@ class BasicWebServerTest {
 
         var response = webServer.handleRequest("GET /home.html HTTP/1.1");
 
-        assertEquals("HTTP/1.1 200 OK\r\n\r\n" + fileContent, response);
+        assertEquals("HTTP/1.1 200 OK\r\n\r\n" + fileContent, response.toString());
     }
 
     @Test
@@ -42,18 +42,18 @@ class BasicWebServerTest {
 
         var response = webServer.handleRequest("GET /e-commerce/amazon.html HTTP/1.1");
 
-        assertEquals("HTTP/1.1 200 OK\r\n\r\n" + fileContent, response);
+        assertEquals("HTTP/1.1 200 OK\r\n\r\n" + fileContent, response.toString());
     }
 
     @Test
     void gets404IfFileNotFound() throws HttpRequestParserException, IOException {
         var response = webServer.handleRequest("GET /non-existing-file HTTP/1.1");
-        assertEquals("HTTP/1.1 404 Not Found\r\n\r\n", response);
+        assertEquals("HTTP/1.1 404 Not Found\r\n\r\n", response.toString());
     }
 
     @Test
     void gets403IfFileNotInRootDirectory() throws HttpRequestParserException, IOException {
         var response = webServer.handleRequest("GET /../index.html HTTP/1.1");
-        assertEquals("HTTP/1.1 403 Forbidden\r\n\r\n", response);
+        assertEquals("HTTP/1.1 403 Forbidden\r\n\r\n", response.toString());
     }
 }
