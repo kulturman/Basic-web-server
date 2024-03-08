@@ -34,8 +34,13 @@ public class BasicWebServerApplication {
                 var clientSocket = serverSocket.accept();
                 var output = new PrintStream(clientSocket.getOutputStream());
                 var input = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                var request = input.readLine();
-                output.println(webServer.handleRequest(request));
+                var request = new StringBuilder();
+
+                while (input.ready()) {
+                    request.append(input.readLine()).append("\r\n");
+                }
+
+                output.println(webServer.handleRequest(request.toString()));
                 clientSocket.close();
             }
         }

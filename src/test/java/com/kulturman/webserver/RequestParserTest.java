@@ -1,9 +1,12 @@
 package com.kulturman.webserver;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 class RequestParserTest {
@@ -15,8 +18,12 @@ class RequestParserTest {
     }
 
     @Test
-    void parsesRequestSuccessfully() throws HttpRequestParserException {
-        var request = requestParser.parse("GET /index.html HTTP/1.1");
+    void parsesRequestSuccessfully() throws HttpRequestParserException, IOException {
+        var request = requestParser.parse("""
+            GET /index.html HTTP/1.1
+            Host: localhost:9090
+            User-Agent: curl/7.68.0
+        """);
 
         assertEquals("GET", request.getMethod());
         assertEquals("/index.html", request.getPath());
