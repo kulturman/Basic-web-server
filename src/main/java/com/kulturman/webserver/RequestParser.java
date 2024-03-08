@@ -9,6 +9,12 @@ public class RequestParser {
         var matcher = Pattern.compile(pattern).matcher(lines.get(0).trim());
         if (!matcher.matches()) throw new HttpRequestParserException("Invalid request");
 
-        return new Request(matcher.group(1), matcher.group(2), matcher.group(3));
+        var path = extractPath(matcher.group(2));
+
+        return new Request(matcher.group(1), path, matcher.group(3));
+    }
+
+    private String extractPath(String pathWithParameters) {
+        return pathWithParameters.split("\\?")[0];
     }
 }

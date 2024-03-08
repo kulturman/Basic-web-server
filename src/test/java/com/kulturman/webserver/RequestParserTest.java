@@ -31,6 +31,13 @@ class RequestParserTest {
     }
 
     @Test
+    void extractsParametersFromRequest() throws HttpRequestParserException {
+        var request = requestParser.parse("GET /index.html?param1=value1&param2=value2 HTTP/1.1");
+
+        assertEquals("/index.html", request.getPath());
+    }
+
+    @Test
     void raisesErrorOnIncorrectRequest() {
         assertThrows(HttpRequestParserException.class, () -> requestParser.parse("GET /index.html"));
     }
